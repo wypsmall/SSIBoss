@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neo.order.dao.OrderOpDaoImpl">
+
+    <resultMap type="OrderInfo" id="beanMap">
+        <id column="id" property="id"/>
+        <result column="ordersn" property="orderSN" javaType="String"/>
+        <result column="amount" property="amount" javaType="BigDecimal"/>
+        <result column="extend" property="extend" javaType="String"/>
+    </resultMap>
+    <resultMap type="OrderInfo" id="orderInfoListMap">
+        <id column="id" property="id"/>
+        <result column="ordersn" property="orderSN" javaType="String"/>
+        <result column="amount" property="amount" javaType="BigDecimal"/>
+        <result column="extend" property="extend" javaType="String"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Map" keyProperty="id" useGeneratedKeys="true">
+  		insert into ssh_order(ordersn,amount,extend)
+		values(#{orderSN},#{amount},#{extend})
+  	</insert>
+
+
+</mapper>

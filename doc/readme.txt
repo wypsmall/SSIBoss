@@ -1,3 +1,6 @@
+【2016-03-11】
+https://bitbucket.org/kubek2k/springockito/downloads
+
 【2016-03-10】
 计划学习Mockito
 研究将mock的对象注入到spring容器内，使用SpringJUnit4ClassRunner方式进行单元测试
