@@ -1,4 +1,7 @@
 【2016-03-11】
+受这个帖子启发
+http://stackoverflow.com/questions/7813741/spring-mockito-test-injection
+这个地址就是springockito集成在一起的第三方jar提供方
 https://bitbucket.org/kubek2k/springockito/downloads
 
 1.王刚提供一种方式在spring的xml文件配置mock，使用的EasyMock实现的，扩展了spring标签，参考dubbo实现的
