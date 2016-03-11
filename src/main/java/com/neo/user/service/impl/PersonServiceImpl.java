@@ -1,16 +1,17 @@
-package com.neo.user.service;
+package com.neo.user.service.impl;
 
 import com.neo.user.entity.User;
+import com.neo.user.service.IPersonService;
+import com.neo.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.tools.tree.SuperExpression;
 
 /**
  * Created by neowyp on 2016/3/9.
  */
 @Service("personService")
-public class PersonService extends UserService implements IPersonService {
+public class PersonServiceImpl extends UserServiceImpl implements IPersonService {
 
     @Autowired
     IUserService userService;

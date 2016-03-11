@@ -1,3 +1,5 @@
+package com.neo.test.dao;
+
 import com.neo.user.dao.IUserDao;
 import com.neo.user.entity.User;
 import com.neo.user.service.IPersonService;

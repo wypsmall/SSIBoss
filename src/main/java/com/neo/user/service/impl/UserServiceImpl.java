@@ -1,7 +1,8 @@
-package com.neo.user.service;
+package com.neo.user.service.impl;
 
 import com.neo.user.dao.IUserDao;
 import com.neo.user.entity.User;
+import com.neo.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by neowyp on 2016/3/9.
  */
 @Service("userService")
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
     @Autowired
     protected IUserDao userDao;
 
