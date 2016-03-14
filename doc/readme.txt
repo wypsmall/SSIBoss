@@ -1,3 +1,7 @@
+【2016-03-14】
+IntelliJ IDEA Ctrl+Alt+Left/Right 失效
+http://blog.csdn.net/lixwjava/article/details/45438503
+======================================================================================================
 	public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent)
 			throws BeansException {
 
