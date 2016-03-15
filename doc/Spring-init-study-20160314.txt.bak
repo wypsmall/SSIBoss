@@ -136,7 +136,6 @@ handlerMappings = {ConcurrentHashMap@1669}  size = 13
  11 = {ConcurrentHashMap$WriteThroughEntry@1699} "http://www.mockito.org/spring/mockito" -> "org.kubek2k.springockito.xml.MockitoNamespaceHandler"
  12 = {ConcurrentHashMap$WriteThroughEntry@1700} "http://www.springframework.org/schema/jee" -> "org.springframework.ejb.config.JeeNamespaceHandler"
  
-D:\Code\.m2\repository\org\springframework\spring-beans\3.1.2.RELEASE\spring-beans-3.1.2.RELEASE-sources.jar!\org\springframework\beans\factory\xml\BeanDefinitionParserDelegate.java
 
 
 

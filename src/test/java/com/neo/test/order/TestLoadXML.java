@@ -14,8 +14,12 @@ public class TestLoadXML {
 
     @Before
     public void init() {
-        ctx = new ClassPathXmlApplicationContext("classpath*:spring/test-applicationContext-mybatis.xml",
-                "classpath*:spring/test-orderAppCtx-noMock.xml");
+        ctx = new ClassPathXmlApplicationContext(
+                "classpath*:spring/test-orderAppCtx-noMock.xml"
+/*
+                , "classpath*:spring/test-applicationContext-mybatis.xml"
+*/
+        );
         System.out.println("===");
     }
 
