@@ -1,0 +1,15 @@
+【2016-03-15】
+Hibernate Validation使用示例及讲解     [这篇文档很有用]
+http://www.tuicool.com/articles/FRFjqmA
+
+透过Pojo对象 field 属性加注解实现格式校验，极大的减少代码量
+http://www.myexception.cn/other/1940341.html
+
+Hibernate Validation各注解的用法
+http://tcrct.iteye.com/blog/1329823
+
+Java深入 - 深入 Java自定义注解
+http://blog.csdn.net/initphp/article/details/37041975
+
+Java注解教程及自定义注解
+http://ifeve.com/java-annotations/
