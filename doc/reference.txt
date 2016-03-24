@@ -1,3 +1,39 @@
+【2016-03-24】
+ Drools规则引擎
+http://blog.csdn.net/lfsf802/article/details/42297553
+
+[Drools]JAVA规则引擎 -- Drools 【Read】
+http://blog.csdn.net/quzishen/article/details/6163012
+
+Drools 6.0入门：时钟实例 【Read 并实现】
+http://blog.csdn.net/sadfishsc/article/details/23456713
+
+书籍下载
+http://www.open-open.com/doc/list/173
+
+http://www.open-open.com/doc/view/45c6b987b1b94ddf8f78f23dc19deab0
+http://www.open-open.com/doc/view/9835c06622184d71ab8b1e3c1259715f
+
+【2016-03-23】
+JBoss Rules 学习（一）: 什么是Rule 【Read】
+http://www.blogjava.net/guangnian0412/archive/2006/06/01/49695.html
+JBoss Rules 学习（二）: RETE算法   【Read】
+http://www.blogjava.net/guangnian0412/archive/2006/06/01/49712.html
+
+规则引擎研究（一）——Rete算法（1） 【Read】
+http://blog.sina.com.cn/s/blog_4a7a7aa30100089g.html
+
+RETE算法的描述（原创）
+http://ipointer.cnblogs.com/archive/2005/09/28/246251.html
+
+【drools】
+官方文档
+http://docs.jboss.org/drools/release/6.0.1.Final/drools-docs/html_single/index.html
+http://drools.org/download/download.html
+
+几种开源规则引擎(BRE)的比较
+http://blog.csdn.net/stone688598/article/details/1656101?1342534732
+
 【2016-03-15】
 Hibernate Validation使用示例及讲解     [这篇文档很有用]
 http://www.tuicool.com/articles/FRFjqmA
