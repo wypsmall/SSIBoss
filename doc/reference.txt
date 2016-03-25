@@ -2,7 +2,7 @@
  Drools规则引擎
 http://blog.csdn.net/lfsf802/article/details/42297553
 
-[Drools]JAVA规则引擎 -- Drools 【Read】
+[Drools]JAVA规则引擎 -- Drools 【Read 需要再次阅读】
 http://blog.csdn.net/quzishen/article/details/6163012
 
 Drools 6.0入门：时钟实例 【Read 并实现】
@@ -13,6 +13,54 @@ http://www.open-open.com/doc/list/173
 
 http://www.open-open.com/doc/view/45c6b987b1b94ddf8f78f23dc19deab0
 http://www.open-open.com/doc/view/9835c06622184d71ab8b1e3c1259715f
+
+======================================================================
+Drools入门系列（一）——HelloWorld 【Read】
+http://www.tuicool.com/articles/3EFNV3M
+
+Drools入门系列（二）——HelloWorld详解之Sample.drl 【Read】
+http://www.tuicool.com/articles/JV7J7zr
+
+Drools入门系列（三）——HelloWorld详解之kmodule.xml 【Read】
+http://www.tuicool.com/articles/ememuq
+
+Drools入门系列（四）——HelloWorld详解之JUnit Test类 【Read】
+http://www.tuicool.com/articles/InMjei
+
+Drools入门系列（五）——KIE概论 【Read 很重要的理论知识】
+http://www.tuicool.com/articles/b2yqeq
+
+Drools入门系列（六）——KIE之基础API详解  【Read 很重要】
+http://www.tuicool.com/articles/jeIVjiy
+我们通过KieServices对象得到一个KieContainer，然后KieContainer根据session name来新建一个KieSession，最后通过KieSession来运行规则。
+
+Drools入门系列（七）——KIE之kmodule.xml 【Read】
+http://www.tuicool.com/articles/22au6zV
+
+Drools入门系列（八）——以编码方式完成kmodule的定义
+http://www.tuicool.com/articles/qqIFvy
+
+【KIE是什么】
+http://www.kiegroup.org/
+KIE Group
+Open source projects for business systems automation and management.
+
+Drools
+Drools 5 introduces the Business Logic integration Platform which provides a unified and integrated platform for Rules, Workflow and Event Processing. It's been designed from the ground up so that each aspect is a first class citizen, with no compromises.
+
+jBPM
+jBPM is a flexible Business Process Management (BPM) Suite. A business process allows you to model your business goals by describing the steps that need to be executed to achieve those goals, and the order of those goals are depicted using a flow chart...
+
+OptaPlanner
+OptaPlanner optimizes business resource usage. Every organization faces planning problems: provide products or services with a limited set of constrained resources. OptaPlanner optimizes such planning to do more business with less resources...
+
+UberFire
+UberFire is a web based workbench framework inspired by Eclipse Rich Client Platform. This is a very strategic project for Drools & jBPM team, once this is the base technology for our next generation of web tooling.
+
+DashBuilder
+Dashbuilder is a full featured web application for the visual composition of custom business dashboards. Data comes from heterogeneous sources of information such as JDBC databases or regular text files and can be displayed using different charting libraries.
+
+======================================================================
 
 【2016-03-23】
 JBoss Rules 学习（一）: 什么是Rule 【Read】
