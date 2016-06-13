@@ -1,3 +1,22 @@
+【2016-03-28】
+这个帖子找到一种方式将drools6与spring集成，但不是非常理想的集成
+drools-6 (kie) auto scanning (from spring) of modules and sessions from kie workbench deployed artifacts
+http://stackoverflow.com/questions/21303349/drools-6-kie-auto-scanning-from-spring-of-modules-and-sessions-from-kie-work
+
+Drools6 基本使用 -- 1
+http://blog.csdn.net/cloud_ll/article/details/26979355?utm_source=tuicool&utm_medium=referral
+
+Drools6给我的最大不同就是把rules打包成jar，使用端通过kie-ci来动态从maven repo中获取指定rules jar版本，
+虽然和maven有紧耦合，在网上也看到了很多人说不喜欢，项目没有maven之类的，不过我觉得简化以及清晰了rules的使用和动态升级：
+系统建立2个项目：一个Drools项目来实现规则，验收规则，生成jar包，另外一个就是真正要用规则的项目，直接通过引入不同版本的jar包实习规则动态升级。
+
+drools6 基本使用 -- 2
+http://blog.csdn.net/cloud_ll/article/details/26982559
+
+
+【2016-03-25】
+Drools5规则引擎开发教程.pdf
+
 【2016-03-24】
  Drools规则引擎
 http://blog.csdn.net/lfsf802/article/details/42297553

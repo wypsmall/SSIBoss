@@ -3,4 +3,8 @@
     <kbase name="clock" packages="drools">
         <ksession name="session-clock" />
     </kbase>
+    <kbase name="customer" packages="drools">
+        <ksession name="snCustomer" />
+        <ksession name="statelessSnCustomer" type="stateless"/>
+    </kbase>
 </kmodule>

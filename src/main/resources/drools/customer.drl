@@ -1,0 +1,56 @@
+package com.neo.drools
+
+rule "02"
+//    salience 12
+    when
+        $customer:Customer(name == "Tom");
+    then
+        System.out.println("[2]===" + System.currentTimeMillis());
+        System.out.println("rule2 res is : " + $customer);
+end
+
+rule "04"
+//    salience 20
+    when
+        eval(true);
+    then
+        System.out.println("[4]===" + System.currentTimeMillis());
+
+end
+
+
+
+rule "01"
+//    salience 2
+    when
+        eval(true);
+    then
+        System.out.println("[1]===" + System.currentTimeMillis());
+        Customer customer = new Customer();
+        customer.setId(System.currentTimeMillis());
+        customer.setName("Tom");
+        insert(customer);
+end
+
+rule "03"
+//    salience 20
+    when
+        eval(true);
+    then
+        System.out.println("[3]===" + System.currentTimeMillis());
+
+end
+
+
+
+rule "05"
+//    salience 20
+    when
+        $customer : Customer();
+    then
+//        update($customer);
+        System.out.println("[5]===" + System.currentTimeMillis());
+
+end
+
+
