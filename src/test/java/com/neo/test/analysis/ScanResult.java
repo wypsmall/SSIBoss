@@ -1,5 +1,6 @@
 package com.neo.test.analysis;
 
+import com.neo.test.analysis.result.BaseResult;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @ToString
-public class ScanResult implements Serializable , Comparable<ScanResult> {
+public class ScanResult extends BaseResult implements Serializable , Comparable<ScanResult>  {
 
     private static final long serialVersionUID = -7803671836208618086L;
 

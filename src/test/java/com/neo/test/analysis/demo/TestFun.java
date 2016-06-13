@@ -1,4 +1,4 @@
-package com.neo.test.analysis;
+package com.neo.test.analysis.demo;
 
 import java.util.HashMap;
 import java.util.Map;

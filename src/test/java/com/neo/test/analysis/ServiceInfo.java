@@ -1,5 +1,6 @@
 package com.neo.test.analysis;
 
+import com.neo.test.analysis.result.BaseResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceInfo implements Serializable {
+public class ServiceInfo extends BaseResult implements Serializable {
     private static final long serialVersionUID = -7445737705476368638L;
 
     private String beanId;  //bean id

@@ -1,5 +1,7 @@
-package com.neo.test.analysis;
+package com.neo.test.analysis.demo;
 
+import com.neo.test.analysis.ScanResult;
+import com.neo.test.analysis.ServiceInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;

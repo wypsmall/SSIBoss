@@ -1,5 +1,6 @@
-package com.neo.test.analysis;
+package com.neo.test.analysis.demo;
 
+import com.neo.test.analysis.ServiceInfo;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
