@@ -1,30 +1,31 @@
 package com.neo.test.analysis.scan;
 
+import com.neo.test.analysis.ScanResult;
 import com.neo.test.analysis.ServiceInfo;
 import com.neo.test.analysis.condition.BaseCondition;
 import com.neo.test.analysis.process.IProcessScan;
 import com.neo.test.analysis.process.ProcessDubboConsumer;
-import com.neo.test.analysis.process.ProcessDubboProvider;
+import com.neo.test.analysis.process.ProcessJavaForDubbo;
 import com.neo.test.analysis.result.BaseResult;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by neowyp on 2016/6/13.
  * Author   : wangyunpeng
  * Date     : 2016/6/13
- * Time     : 12:03
+ * Time     : 14:11
  * Version  : V1.0
- * Desc     : 解析xml中的分析dubbo服务提供者和消费者的版本号
+ * Desc     :
  */
 @Slf4j
-public class ScanXmlFile extends AbstractScanFile {
-
-    public final static String DUBBO_PROVIDER = "dubbo:service";
+public class ScanJavaFile extends AbstractScanFile {
     public final static String DUBBO_CONSUMER = "dubbo:reference";
-    public ScanXmlFile(IProcessScan processScan) {
+
+    public ScanJavaFile(IProcessScan processScan) {
         super(processScan);
     }
 
@@ -37,28 +38,35 @@ public class ScanXmlFile extends AbstractScanFile {
             condition.setParam("dubbo", DUBBO_CONSUMER);
             condition.setParam("FILENAME_REGEX", ".*\\.(?i)xml");
             List<BaseResult> rts =  scan.scanByCdt(new File(filePath), condition);
+            List<BaseCondition> bcs = new ArrayList<>();
             log.info("--------------------");
             int count = 0;
             for (BaseResult rt : rts) {
                 ServiceInfo serviceInfo = (ServiceInfo) rt;
+                BaseCondition baseCondition = new BaseCondition();
+                baseCondition.setParam("SERVICEINFO", rt);
+                baseCondition.setParam("FILENAME_REGEX", ".*\\.(?i)java");
+                bcs.add(baseCondition);
+
                 log.info("{}|{}|{}|{}", count, serviceInfo.getBeanId(), serviceInfo.getInfName(), serviceInfo.getVersion());
                 count++;
             }
             log.info("--------------------");
-            ProcessDubboProvider proProcess = new ProcessDubboProvider();
-            scan = new ScanXmlFile(proProcess);
-            condition.setParam("dubbo", DUBBO_PROVIDER);
-            condition.setParam("FILENAME_REGEX", ".*\\.(?i)xml");
-            rts =  scan.scanByCdt(new File(filePath), condition);
             count = 0;
+            String moduleName = "trade";
+            String rootPath = "D:\\Code\\Code_IntellijIdea\\ReviewCode\\gomeo2o_pro\\venus-" + moduleName + "\\trunk\\src\\main\\java";
+            ProcessJavaForDubbo dubboProcess = new ProcessJavaForDubbo();
+            ScanJavaFile scanJava = new ScanJavaFile(dubboProcess);
+
+            rts = scanJava.scanRootByCdts(new File(rootPath), bcs);
             for (BaseResult rt : rts) {
-                ServiceInfo serviceInfo = (ServiceInfo) rt;
-                log.info("{}|{}|{}|{}", count, serviceInfo.getBeanId(), serviceInfo.getInfName(), serviceInfo.getVersion());
+                ScanResult sr = (ScanResult) rt;
+
+                log.info("{}|{}|{}|{}|{}|{}", count, sr.getBeanId(), sr.getVersion(), sr.getMothedName(), sr.getClsName(), sr.getLineNum());
                 count++;
             }
-
         } catch (Exception e) {
-            log.error("",e);
+            log.error("", e);
         }
     }
 }

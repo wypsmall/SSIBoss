@@ -20,9 +20,10 @@ import java.util.List;
  * Date     : 2016/6/12
  * Time     : 11:49
  * Version  : V1.0
- * Desc     :
+ * Desc     : 作废，SAX没有找到处理深层嵌套出现的同样的name的情况，改用DOM4j处理
  */
 @Slf4j
+@Deprecated
 public class AnalysisXMLForDubbo extends DefaultHandler {
     @Getter
     private List<ServiceInfo> serviceInfos = new ArrayList<ServiceInfo>();

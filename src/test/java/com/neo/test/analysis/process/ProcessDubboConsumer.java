@@ -65,7 +65,8 @@ public class ProcessDubboConsumer extends DefaultHandler implements IProcessScan
             if (!file.isFile())
                 return rts;
 
-            if (!file.getName().matches(".*\\.(?i)xml")) {
+            String matchesStr = (String)condition.getParam("FILENAME_REGEX");
+            if (!file.getName().matches(matchesStr)) { // ".*\\.(?i)xml"
                 return rts;
             }
             log.info("file:{}, condition:{}", file.getAbsoluteFile(), condition);

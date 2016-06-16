@@ -64,8 +64,8 @@ public class ProcessDubboProvider extends DefaultHandler implements IProcessScan
                 return rts;
             if (!file.isFile())
                 return rts;
-
-            if (!file.getName().matches(".*\\.(?i)xml")) {
+            String matchesStr = (String) condition.getParam("FILENAME_REGEX");
+            if (!file.getName().matches(matchesStr)) { // ".*\\.(?i)xml"
                 return rts;
             }
             log.info("file:{}, condition:{}", file.getAbsoluteFile(), condition);
@@ -79,7 +79,7 @@ public class ProcessDubboProvider extends DefaultHandler implements IProcessScan
 
             rts = handler.getResultList();
         } catch (Exception e) {
-            log.error("file:{}",file, e);
+            log.error("file:{}", file, e);
         }
         return rts;
     }

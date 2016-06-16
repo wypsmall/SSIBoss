@@ -24,13 +24,13 @@ import java.util.Map;
 public class BaseCondition implements Serializable {
     private static final long serialVersionUID = -8771937761515769276L;
 
-    private Map<String, String> param = new HashMap<>();
+    private Map<String, Object> params = new HashMap<String, Object>();
 
-    public String getParam(String key) {
-        return  param.get(key);
+    public Object getParam(String key) {
+        return  params.get(key);
     }
 
-    public String setParam(String key, String value) {
-        return param.put(key, value);
+    public Object setParam(String key, Object value) {
+        return params.put(key, value);
     }
 }
