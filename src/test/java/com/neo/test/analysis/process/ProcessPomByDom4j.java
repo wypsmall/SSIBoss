@@ -19,28 +19,34 @@ import java.util.List;
  * Date     : 2016/6/15
  * Time     : 10:03
  * Version  : V1.0
- * Desc     :
+ * Desc     : 继承IProcessScan，重载process方法，通过dom4j解析pom文件
  */
 @Slf4j
 public class ProcessPomByDom4j implements IProcessScan {
     @Override
     public List<BaseResult> process(File file, BaseCondition condition) {
-        //        log.info("file:{}, condition:{}", file.getAbsoluteFile(), condition);
+        //调试是可以打开
+//        log.info("file:{}, condition:{}", file.getAbsoluteFile(), condition);
         List<BaseResult> rts = new ArrayList<BaseResult>();
         try {
-            if (null == file)
+            if (null == file)//对象为空返回null
                 return rts;
-            if (!file.isFile())
+            if (!file.isFile())//不是文件对象返回null
                 return rts;
+            //TODO 扫描路径中包含"venus-"，则个限制已经提取到FastScanPomFile中，梢后删除
             if (!file.getAbsolutePath().contains("venus-"))
                 return rts;
+            //TODO 扫描路径中包含"trunk"，则个限制已经提取到FastScanPomFile中，梢后删除
             if (!file.getAbsolutePath().contains("trunk"))
                 return rts;
+
+            //TODO 文件名匹配规则，稍后应该修改成正则匹配
             String matchesStr = (String) condition.getParam("FILENAME_REGEX");
             if (!file.getName().equals(matchesStr)) { // "pom.xml"
                 return rts;
             }
-
+            log.info("file:{}, condition:{}", file.getAbsoluteFile(), condition);
+            //初始化Document对象
             SAXReader sr = new SAXReader();
             Document doc = sr.read(file);
             Element root = doc.getRootElement();
@@ -72,32 +78,44 @@ public class ProcessPomByDom4j implements IProcessScan {
         return rts;
     }
 
-    private ProDependency constructByElement(Element root) {
+    /**
+     * 分析子节点，组装ProDependency对象，因为project节点、dependencies的子节点都包含
+     * artifactId、groupId、version、packaging
+     * @param parent 父节点Element对象
+     * @return ProDependency对象
+     */
+
+    private ProDependency constructByElement(Element parent) {
         ProDependency dep = new ProDependency();
-        Element element = root.element("artifactId");
+        Element element = parent.element("artifactId");
         if (null != element)
             dep.setArtifactId(element.getText());
-        element = root.element("groupId");
+        element = parent.element("groupId");
         if (null != element)
             dep.setGroupId(element.getText());
-        element = root.element("version");
+        element = parent.element("version");
         if (null != element)
             dep.setVersion(element.getText());
-        element = root.element("packaging");
+        element = parent.element("packaging");
         if (null != element)
             dep.setPackaging(element.getText());
         return dep;
     }
 
+    /**
+     * 开发测试
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             String path = "D:\\Code\\Code_IntellijIdea\\ReviewCode\\gomeo2o_pro\\venus-common\\trunk\\pom.xml";
             ProcessPomByDom4j process = new ProcessPomByDom4j();
             BaseCondition condition = new BaseCondition();
-            String[] ins = new String[]{"venus-", "trunk\\"};
-            String[] exs = new String[]{"tags\\",};
-            condition.setParam("includes", ins);
-            condition.setParam("excludes", exs);
+
+//            String[] ins = new String[]{"venus-", "trunk\\"};
+//            String[] exs = new String[]{"tags\\",};
+//            condition.setParam("includes", ins);
+//            condition.setParam("excludes", exs);
             condition.setParam("FILENAME_REGEX", "pom.xml");
 
             List<BaseResult> rts = process.process(new File(path), condition);
