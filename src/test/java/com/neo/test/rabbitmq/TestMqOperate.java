@@ -4,6 +4,7 @@ import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -37,8 +38,93 @@ public class TestMqOperate {
         //fanout exchange
 //        sendMsgByFanout();
 //        receiveMsgByFanout();
+
+        //topic exchange
+        sendMsgByTopic();
+//        receiveMsgByTopic("bs.risk", "risk.#");
+//        receiveMsgByTopic("bs.alarm", "risk.*.error");
     }
 
+    /**
+     * 设计以下场景
+     * //      exchange            routingkey              queue
+     * //      msg.risk.topic      risk.trade.info
+     * //                          risk.pay.info
+     * //                          risk.trade.error
+     * //                          risk.pay.error
+     * //
+     * //                          risk.#                  bs.risk
+     * //                          risk.*.error            bs.alarm
+     * 在发送message只需要指定routingkey，不需要指定queue
+     * 在接收message指定routingkey与queue
+     */
+    private static void sendMsgByTopic() {
+        try {
+            //创建连接连接到MabbitMQ
+            Connection connection = getConnection();
+            //创建一个频道
+            Channel channel = connection.createChannel();
+            //声明exchange
+            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
+
+            String[] routing_keys = new String[]{
+                    "risk.trade.info",
+                    "risk.pay.info",
+                    "risk.trade.error",
+                    "risk.pay.error"};
+            for (String routing_key : routing_keys) {
+                String message = "message info [" + UUID.randomUUID().toString() + "]";
+                channel.basicPublish(CFG_TOP_EXCHANGE_NAME, routing_key, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+                log.info("[x] Sent [{}]", message);
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+        } catch (Exception e) {
+            log.error("send message error, info is:", e);
+        }
+    }
+
+    /**
+     *
+     * @param queueName     bs.risk     bs.alarm
+     * @param pattarnKey    risk.#      risk.*.error
+     */
+    private static void receiveMsgByTopic(String queueName, String pattarnKey) {
+        try {
+            //打开连接和创建频道，与发送端一样
+            Connection connection = getConnection();
+            Channel channel = connection.createChannel();
+            //声明exchange
+            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
+            //声明队列，主要为了防止消息接收者先运行此程序，队列还不存在时创建队列。
+            channel.queueDeclare(queueName, true, false, false, null);
+
+            channel.queueBind(queueName, CFG_TOP_EXCHANGE_NAME, pattarnKey);
+
+            log.info("[*] Waiting for messages. To exit press CTRL+C");
+            //创建队列消费者
+            QueueingConsumer consumer = new QueueingConsumer(channel);
+            //指定消费队列
+            channel.basicConsume(queueName, false, consumer);
+
+
+            for (int i = 0; i < 20; i++) {
+                //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
+                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                Envelope envelope = delivery.getEnvelope();
+                String message = new String(delivery.getBody());
+                log.info("[x] Received {}-{} : [{}]", queueName, pattarnKey, message);
+                channel.basicAck(envelope.getDeliveryTag(), false);
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+
+        } catch (Exception e) {
+            log.error("receive message error, info is:", e);
+        }
+    }
     /**
      * 建立扇出的exchange，发消息，不需要declare队列
      * 如果没有declare队列，那么在没有队列连接前发送的消息都会丢失
@@ -76,8 +162,8 @@ public class TestMqOperate {
     /**
      * 接收fanout-exchange的消息
      * 1.取决与queue的性质，是永久还是自动删除
-     *  a.如果永久性的，又有消息那就接收消息
-     *  b.如果是临时的，在队列声明周期内没有消息发送，那就不可能接收到消息
+     * a.如果永久性的，又有消息那就接收消息
+     * b.如果是临时的，在队列声明周期内没有消息发送，那就不可能接收到消息
      * 2.消息的持久性其实不重要
      * 3.fanout可以认为是广播，这么理解fanout类型，只要你听着，有消息你就会知道，如果你不听，即使有消息，你也听不到
      */
@@ -116,7 +202,7 @@ public class TestMqOperate {
             for (int i = 0; i < 2; i++) {
                 //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
                 QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                Envelope envelope =  delivery.getEnvelope();
+                Envelope envelope = delivery.getEnvelope();
                 String message = new String(delivery.getBody());
                 log.info("[x] Received {}-[{}]", delivery.getProperties().getCorrelationId(), message);
 //                channel.basicAck(envelope.getDeliveryTag(), false);
@@ -188,7 +274,7 @@ public class TestMqOperate {
             for (int i = 0; i < 2; i++) {
                 //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
                 QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                Envelope envelope =  delivery.getEnvelope();
+                Envelope envelope = delivery.getEnvelope();
                 String message = new String(delivery.getBody());
                 log.info("[x] Received {}-[{}]", delivery.getProperties().getCorrelationId(), message);
                 channel.basicAck(envelope.getDeliveryTag(), false);
