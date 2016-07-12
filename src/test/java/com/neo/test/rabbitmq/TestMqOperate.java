@@ -40,9 +40,121 @@ public class TestMqOperate {
 //        receiveMsgByFanout();
 
         //topic exchange
-        sendMsgByTopic();
+//        sendMsgByTopic();
 //        receiveMsgByTopic("bs.risk", "risk.#");
 //        receiveMsgByTopic("bs.alarm", "risk.*.error");
+
+        /**
+         * 在exchange、queue以及没有通过routingkey来binding时
+         * publish的消息都会丢失
+         * 理论上应该现有producer建立exchange，并且指定routingkey发送消息
+         * consumer负责创建queue，并指定routingkey来接收消失
+         */
+
+//        exsitJudge();
+
+        sendMsgByTopicMulti();
+//        receiveMsgByTopicMulti("bs.risk");
+//        receiveMsgByTopicMulti("bs.alarm");
+    }
+
+    private static void sendMsgByTopicMulti() {
+        try {
+            //创建连接连接到MabbitMQ
+            Connection connection = getConnection();
+            //创建一个频道
+            Channel channel = connection.createChannel();
+            //声明exchange
+            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
+
+            String[] routing_keys = new String[]{
+                    "risk.trade.info",
+                    };
+            for (String routing_key : routing_keys) {
+                String message = "message info [" + UUID.randomUUID().toString() + "]";
+                channel.basicPublish(CFG_TOP_EXCHANGE_NAME, routing_key, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+                log.info("[x] Sent [{}]", message);
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+        } catch (Exception e) {
+            log.error("send message error, info is:", e);
+        }
+    }
+
+    private static void receiveMsgByTopicMulti(String queueName) {
+        try {
+            //打开连接和创建频道，与发送端一样
+            Connection connection = getConnection();
+            Channel channel = connection.createChannel();
+            //声明exchange
+//            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
+            //声明队列，主要为了防止消息接收者先运行此程序，队列还不存在时创建队列。
+            channel.queueDeclare(queueName, true, false, false, null);
+
+            channel.queueBind(queueName, CFG_TOP_EXCHANGE_NAME, "risk.trade.info");
+
+            log.info("[*] Waiting for messages. To exit press CTRL+C");
+            //创建队列消费者
+            QueueingConsumer consumer = new QueueingConsumer(channel);
+            //指定消费队列
+            channel.basicConsume(queueName, false, consumer);
+
+
+            for (int i = 0; i < 20; i++) {
+                //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
+                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                Envelope envelope = delivery.getEnvelope();
+                String message = new String(delivery.getBody());
+                log.info("[x] Received {} : [{}]", queueName, message);
+                channel.basicAck(envelope.getDeliveryTag(), false);
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+
+        } catch (Exception e) {
+            log.error("receive message error, info is:", e);
+        }
+    }
+
+    private static void exsitJudge() {
+        Connection connection = null;
+        Channel channel = null;
+        try {
+            //创建连接连接到MabbitMQ
+            connection = getConnection();
+            //创建一个频道
+            channel = connection.createChannel();
+
+//            AMQP.Exchange.DeclareOk exRes = channel.exchangeDeclarePassive(CFG_TOP_EXCHANGE_NAME);
+//            log.info("exRes is {}", exRes);
+            AMQP.Queue.DeclareOk qRes = channel.queueDeclarePassive("bs.alarm");
+            log.info("qRes is {}", qRes);
+            //每次获取消息数量，perfetch=1
+//            channel.basicQos(1);
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+        } catch (Exception e) {
+            log.error("send message error, info is:", e);
+        } finally {
+            try {
+                //关闭频道和连接
+                channel.close();
+//                connection.close();
+            } catch (Exception e) {
+                log.error("finally channel.close() exception :", e);
+            }
+            try {
+                //关闭频道和连接
+//                channel.close();
+                connection.close();
+            } catch (Exception e) {
+                log.error("finally connection.close() exception :", e);
+            }
+        }
     }
 
     /**
@@ -96,7 +208,7 @@ public class TestMqOperate {
             Connection connection = getConnection();
             Channel channel = connection.createChannel();
             //声明exchange
-            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
+//            channel.exchangeDeclare(CFG_TOP_EXCHANGE_NAME, "topic"); //direct fanout topic
             //声明队列，主要为了防止消息接收者先运行此程序，队列还不存在时创建队列。
             channel.queueDeclare(queueName, true, false, false, null);
 
@@ -115,6 +227,8 @@ public class TestMqOperate {
                 Envelope envelope = delivery.getEnvelope();
                 String message = new String(delivery.getBody());
                 log.info("[x] Received {}-{} : [{}]", queueName, pattarnKey, message);
+                //long deliveryTag 一次投递的标记
+                //boolean multiple true确认所有消息，包括提供的投递标记， false表示仅确认当前的投递标签的消息
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
             //关闭频道和连接
