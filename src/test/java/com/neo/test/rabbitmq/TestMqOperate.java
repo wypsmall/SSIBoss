@@ -4,6 +4,9 @@ import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
@@ -53,11 +56,155 @@ public class TestMqOperate {
 
 //        exsitJudge();
 
-        sendMsgByTopicMulti();
+        /**
+         *  首先创建一个exchange、routingkey、
+         *  然后在消费端分别创建两个队列，分先后
+         *  相当于一个queue已经开始消费指定routingkey的消息
+         *  之后又加多一个queue还是消费这个routingkey的消息
+         */
+//        sendMsgByTopicMulti();
 //        receiveMsgByTopicMulti("bs.risk");
 //        receiveMsgByTopicMulti("bs.alarm");
+
+        /**
+         * 演示dead letter exchange
+         * exchange direct CFG_DIR_EXCHANGE_NAME    msg.risk.direct
+         * routingkey CFG_ROUTING_KEY  trade.risk
+         * queue    bs.risk
+         * x-dead-letter-exchange       msg.risk.dead
+         * x-dead-letter-routing-key    dead.trade.risk
+         * dead-letter queue        bs.risk.queue
+         */
+        new Date();
+//        sendMsgUseDLX("normal message [" + new Date() + "]");
+//        sendMsgUseDLX("dead message [" + new Date() + "]");
+//        receiveMsgUseDLX();
+        receiveMsgDeadLetter();
     }
 
+    /**
+     * if message begin with 'dead' will not process, and transfor to dead letter exchange
+     *
+     * @param message
+     */
+    private static void sendMsgUseDLX(String message) {
+        try {
+            //创建连接连接到MabbitMQ
+            Connection connection = getConnection();
+            //创建一个频道
+            Channel channel = connection.createChannel();
+            //声明exchange
+            channel.exchangeDeclare(CFG_DIR_EXCHANGE_NAME, "direct"); //direct fanout topic
+            //设置dead letter exchange and routingkey
+            Map<String, Object> args = new HashMap<String, Object>();
+            args.put("x-dead-letter-exchange", "msg.risk.dead");
+            args.put("x-dead-letter-routing-key", "dead.trade.risk");
+            //指定一个队列 durable = true
+            channel.queueDeclare(CFG_QUEUE_NAME, true, false, false, args);
+            //binding routingkey
+            channel.queueBind(CFG_QUEUE_NAME, CFG_DIR_EXCHANGE_NAME, CFG_ROUTING_KEY);
+            //发送的消息
+            //往队列中发出一条消息，持久化 MessageProperties.PERSISTENT_TEXT_PLAIN
+            channel.basicPublish(CFG_DIR_EXCHANGE_NAME, CFG_ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            log.info("[x] Sent [{}]", message);
+
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+        } catch (Exception e) {
+            log.error("send message error, info is:", e);
+        }
+    }
+
+    /**
+     * consume message
+     * if message contain "dead" reject
+     */
+    private static void receiveMsgUseDLX() {
+        try {
+            //打开连接和创建频道，与发送端一样
+            Connection connection = getConnection();
+            Channel channel = connection.createChannel();
+
+            //创建队列消费者
+            QueueingConsumer consumer = new QueueingConsumer(channel);
+
+            //指定消费队列
+            //如果autoAck=true，那么这个方法执行完后所有消息都被接收到本地
+            //如果autoAck=false，channel.basicAck()人工确认接收
+            channel.basicQos(1);
+            channel.basicConsume(CFG_QUEUE_NAME, false, consumer);
+
+            for (int i = 0; i < 10; i++) {
+                //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
+                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                Envelope envelope = delivery.getEnvelope();
+                String message = new String(delivery.getBody());
+                log.info("[x] Received {}-[{}]", envelope, message);
+                if (message.contains("dead")) {
+                    channel.basicReject(envelope.getDeliveryTag(), false);
+                } else {
+                    channel.basicAck(envelope.getDeliveryTag(), false);
+                }
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+
+        } catch (Exception e) {
+            log.error("receive message error, info is:", e);
+        }
+    }
+
+    /**
+     * x-dead-letter-exchange       msg.risk.dead
+     * x-dead-letter-routing-key    dead.trade.risk
+     * dead-letter queue        bs.risk.dead
+     * dead letter config must be create pre
+     * include exchange routing-key queue
+     * then consume message
+     */
+    private static void receiveMsgDeadLetter() {
+        try {
+            //打开连接和创建频道，与发送端一样
+            Connection connection = getConnection();
+            Channel channel = connection.createChannel();
+            channel.exchangeDeclare("msg.risk.dead", "direct"); //direct fanout topic
+            //创建队列消费者
+            QueueingConsumer consumer = new QueueingConsumer(channel);
+
+            //指定消费队列
+            channel.queueDeclare("bs.risk.dead", true, false, false, null);
+
+            channel.queueBind("bs.risk.dead", "msg.risk.dead", "dead.trade.risk");
+            //如果autoAck=true，那么这个方法执行完后所有消息都被接收到本地
+            //如果autoAck=false，channel.basicAck()人工确认接收
+            channel.basicQos(1);
+            channel.basicConsume("bs.risk.dead", false, consumer);
+
+            for (int i = 0; i < 10; i++) {
+                //consumer.nextDelivery(); 这个方法使用BlockingQueue.take()方法，所以进程阻塞，程序无法退出
+                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                Envelope envelope = delivery.getEnvelope();
+                String message = new String(delivery.getBody());
+                log.info("[x] Received {}-[{}]", envelope, message);
+                log.info("[x] Received Head info {}", delivery.getProperties().getHeaders());
+
+                channel.basicAck(envelope.getDeliveryTag(), false);
+
+            }
+            //关闭频道和连接
+            channel.close();
+            connection.close();
+
+        } catch (Exception e) {
+            log.error("receive message error, info is:", e);
+        }
+    }
+
+    /**
+     * 创建exchange和routingkey
+     */
     private static void sendMsgByTopicMulti() {
         try {
             //创建连接连接到MabbitMQ
@@ -69,7 +216,7 @@ public class TestMqOperate {
 
             String[] routing_keys = new String[]{
                     "risk.trade.info",
-                    };
+            };
             for (String routing_key : routing_keys) {
                 String message = "message info [" + UUID.randomUUID().toString() + "]";
                 channel.basicPublish(CFG_TOP_EXCHANGE_NAME, routing_key, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
@@ -83,6 +230,12 @@ public class TestMqOperate {
         }
     }
 
+    /**
+     * 绑定exchange和routingkey和queue，queueName根据入参决定
+     * 相当与创建一个新的queue，复制一路消息到这个队列
+     *
+     * @param queueName
+     */
     private static void receiveMsgByTopicMulti(String queueName) {
         try {
             //打开连接和创建频道，与发送端一样
@@ -198,9 +351,8 @@ public class TestMqOperate {
     }
 
     /**
-     *
-     * @param queueName     bs.risk     bs.alarm
-     * @param pattarnKey    risk.#      risk.*.error
+     * @param queueName  bs.risk     bs.alarm
+     * @param pattarnKey risk.#      risk.*.error
      */
     private static void receiveMsgByTopic(String queueName, String pattarnKey) {
         try {
@@ -239,6 +391,7 @@ public class TestMqOperate {
             log.error("receive message error, info is:", e);
         }
     }
+
     /**
      * 建立扇出的exchange，发消息，不需要declare队列
      * 如果没有declare队列，那么在没有队列连接前发送的消息都会丢失
