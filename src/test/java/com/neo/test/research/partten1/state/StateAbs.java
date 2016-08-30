@@ -14,6 +14,7 @@ public abstract class StateAbs {
 
     protected static final StateAbs STATE_INIT = new InitState();
     protected static final StateAbs STATE_WAITINGPAY = new WaitingPayState();
+    protected static final StateAbs STATE_WAITINGCONFIRM = new WaitingConfirmState();
     protected static final StateAbs STATE_COMPLETE = new CompleteState();
     protected static final StateAbs STATE_CLOSE = new CloseState();
     protected static final StateAbs STATE_WAITINGAUDIT = new WaitingAuditState();
@@ -43,6 +44,10 @@ public abstract class StateAbs {
     }
 
     public StateAbs refund() {
+        throw new ForbbidenActionException();
+    }
+
+    public StateAbs confirm() {
         throw new ForbbidenActionException();
     }
     //2016-08-30 end

@@ -14,11 +14,11 @@
  * <br>*Service集成ActionAbs表示需要做的动作
  * <br>
  * <br>2016-08-30
- * <br>新增两个状态，WaitingAudit、WaitingRefund，通过版本工具比较新增状态增加的代码量
+ * <br>【1】新增两个状态，WaitingAudit、WaitingRefund，通过版本工具比较新增状态增加的代码量
  * <br>增加2个状态，4个方法，特别是修改抽象基类
- * <br>
- * <br>
- * <br>
+ * <br>【2】在waitingpay与complete增加中间状态waitingconfirm
+ * <br>增加1个状态，1个方法，重点是修改了一个原有状态的方法
+ * <br>新增一个中间节点，需要修改原状态的代码，有点像硬编码，需要考虑如何扩展
  * <br>
  * <br>
  * <br>

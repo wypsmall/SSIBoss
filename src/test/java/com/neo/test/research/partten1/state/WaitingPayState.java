@@ -9,4 +9,11 @@ package com.neo.test.research.partten1.state;
  * Desc     :
  */
 public class WaitingPayState extends StateAbs {
+    @Override
+    public StateAbs pay() {
+        //发现之前没有编写这个方法
+//        return STATE_COMPLETE;
+        //2016-08-30
+        return STATE_WAITINGCONFIRM;
+    }
 }
