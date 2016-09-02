@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * Date     : 2016/9/2
  * Time     : 14:30
  * Version  : V1.0
- * Desc     :
+ * Desc     : 定义节点，实质上是状态模式中的state实现类
  */
 @Data
 @NoArgsConstructor

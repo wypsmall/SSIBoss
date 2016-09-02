@@ -6,7 +6,7 @@ package com.neo.test.research.partten2;
  * Date     : 2016/9/2
  * Time     : 15:01
  * Version  : V1.0
- * Desc     :
+ * Desc     : 状态未按定义的配置进行流转则抛出此异常
  */
 public class ForbbidenException extends RuntimeException {
 }

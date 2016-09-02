@@ -17,6 +17,13 @@ import java.util.List;
  * 状态视作vertex，触发状态流转的动作视为edge，状态机用graph表示，同时指定version
  * edge内聚了vertex，而vertex不依赖edge
  * 同时秉承partten1中的思想，graph中不会内聚context，接触了依赖
+ * 与partten1进行一下类比
+ *
+ *                  partten1            partten2
+ * state抽象  通过抽象类和子类描述     通过Vertex进行抽象
+ * 状态流转   在基类中封装抽象方法     通过Edge抽象边的概念
+ *            在子类中具体方法里定义   起始、终止节点和边
+ *            接下来流转在方法中定义   抽象出状态流转
  */
 @Slf4j
 public class Graph {
@@ -36,7 +43,7 @@ public class Graph {
     public static final String TRIGGER_CONFIRM = "confirm";//确认支付完成
     public static final String TRIGGER_CANCEL = "cancel";//未支付取消
     public static final String TRIGGER_APPLY_CANCEL = "applyCancel";//支付完成申请取消
-    public static final String TRIGGER_DISAGREE = "disagress";//不同意取消
+    public static final String TRIGGER_DISAGREE = "disagree";//不同意取消
     public static final String TRIGGER_AGREE = "agree";//同意取消
     public static final String TRIGGER_REFUND = "refund";//退款
 
