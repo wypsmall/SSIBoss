@@ -18,11 +18,15 @@ public class ErrorHandler extends AbstractHandler {
     public ErrorHandler() {
         this.action = "ROLLBACK_ERROR";
     }
+//    @Override
+//    public void process() {
+//        throw new HandlerRollBackException();
+//    }
+
     @Override
-    public void process() {
+    protected void handler() {
         throw new HandlerRollBackException();
     }
-
 
     public static void main(String[] args) {
         AccountHandler accountHandler = null;
@@ -52,4 +56,5 @@ public class ErrorHandler extends AbstractHandler {
 
 
     }
+
 }

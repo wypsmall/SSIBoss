@@ -15,9 +15,15 @@ public class AccountHandler extends AbstractHandler {
     public AccountHandler() {
         this.action = "ROLLBACK_ACCOUNT";
     }
+
     @Override
+    protected void handler() {
+        log.info("use account!");
+    }
+
+/*    @Override
     public void process() {
         log.info("use account!");
         super.process();
-    }
+    }*/
 }

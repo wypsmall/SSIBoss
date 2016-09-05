@@ -23,9 +23,12 @@ public abstract class AbstractHandler implements IHandler {
     //当前handler回归action名称
     protected String action;
 
+    protected abstract void handler();
+
     @Override
     public void process() {
         try {
+            handler();
             if (null != nextHandler) {
                 nextHandler.process();
             }

@@ -15,10 +15,16 @@ public class PromotionHandler extends AbstractHandler {
     public PromotionHandler() {
         this.action = "ROLLBACK_PROMOTION";
     }
+
     @Override
+    protected void handler() {
+        log.info("use coupon!");
+    }
+
+/*    @Override
     public void process() {
         log.info("use coupon!");
         super.process();
-    }
+    }*/
 
 }

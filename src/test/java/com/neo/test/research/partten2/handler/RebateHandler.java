@@ -15,9 +15,15 @@ public class RebateHandler extends AbstractHandler {
     public RebateHandler() {
         this.action = "ROLLBACK_REBATE";
     }
+
     @Override
+    protected void handler() {
+        log.info("send rebate mq!");
+    }
+
+/*    @Override
     public void process() {
         log.info("send rebate mq!");
         super.process();
-    }
+    }*/
 }
