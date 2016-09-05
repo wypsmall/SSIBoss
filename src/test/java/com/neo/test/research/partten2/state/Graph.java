@@ -1,4 +1,4 @@
-package com.neo.test.research.partten2;
+package com.neo.test.research.partten2.state;
 
 import lombok.extern.slf4j.Slf4j;
 

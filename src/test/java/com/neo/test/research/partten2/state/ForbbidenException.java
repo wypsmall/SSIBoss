@@ -1,4 +1,4 @@
-package com.neo.test.research.partten2;
+package com.neo.test.research.partten2.state;
 
 /**
  * Created by neowyp on 2016/9/2.
